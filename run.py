@@ -136,7 +136,7 @@ def transform_df(df):
     prev_row = df.iloc[-2]
     row_sma = df.iloc[-10]
 
-    if row_sma['SMA_20'] > prev_row['SMA_20']:
+    if prev_row['SMA_20'] < row_sma['SMA_20']:
         new_df = pd.DataFrame([{
             'pOpen': prev_row['Open'],
             'pHigh': prev_row['High'],
