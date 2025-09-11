@@ -52,7 +52,7 @@ python run.py
 If conditions are met, the script will print predictions like:
 
 ```
-Ejecutando modelos... 🚀
+Running Bullish Engulfing Model... 🚀
 Bullish Engulfing in WBD:
 Predict: True    Prob: 0.5467
 ```
