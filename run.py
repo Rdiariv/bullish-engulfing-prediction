@@ -3,21 +3,8 @@ import talib as ta
 import joblib
 import pandas as pd
 import numpy as np
+import index
 
-# List of Nasdaq-100 tickers
-TICKERS_NASDAQ100 = [
-    "AAPL", "ABNB", "ADBE", "ADI", "ADP", "ADSK", "AEP", "AMAT", "AMD", "AMGN",
-    "AMZN", "ANSS", "APP", "ARM", "ASML", "AVGO", "AXON", "AZN", "BIIB", "BKNG",
-    "BKR", "CCEP", "CDNS", "CDW", "CHTR", "CMCSA", "COST", "CPRT", "CRWD",
-    "CSCO", "CSGP", "CSX", "CTAS", "CTSH", "DASH", "DDOG", "DXCM", "EA", "EXC",
-    "FANG", "FAST", "FTNT", "GEHC", "GFS", "GILD", "GOOG", "GOOGL", "HON", "IDXX",
-    "INTC", "INTU", "ISRG", "KDP", "KHC", "KLAC", "LIN", "LRCX", "LULU", "MAR",
-    "MCHP", "MDLZ", "MELI", "META", "MNST", "MRVL", "MSFT", "MSTR", "MU", "NFLX",
-    "NVDA", "NXPI", "ODFL", "ON", "ORLY", "PANW", "PAYX", "PCAR", "PDD", "PEP",
-    "PLTR", "PYPL", "QCOM", "REGN", "ROP", "ROST", "SBUX", "SHOP", "SNPS", "TEAM",
-    "TMUS", "TSLA", "TTD", "TTWO", "TXN", "VRSK", "VRTX", "WBD", "WDAY", "XEL",
-    "ZS"
-]
 
 
 # ------------------------------
@@ -35,19 +22,24 @@ def candle_type(row):
 # ------------------------------
 # Download historical data
 # ------------------------------
-def get_data(period='210d'):
+def get_data(tickers, period='210d'):
     """Download historical OHLCV data from Yahoo Finance for the specified tickers"""
     data = {}
 
     print("Downloading data from Yahoo Finance...")
 
-    for ticker in TICKERS_NASDAQ100:
+    for ticker in tickers:
         t = yf.Ticker(ticker)
         try:
             df = t.history(period=period)
+
+            if df.empty:
+                print(f"\033[91m[WARNING]\033[0m No data found for {ticker}. Skipping...")
+                continue
+
             df['Type'] = df.apply(candle_type, axis=1)
             data[ticker] = df
-            print(f"[SUCCESS] Data for {ticker} downloaded successfully.")
+            print(f"\033[92m[SUCCESS]\033[0m Data for {ticker} downloaded successfully.")
         except Exception as e:
             print(f"[ERROR] Failed to download data for {ticker}: {e}")
             continue
@@ -168,7 +160,7 @@ def run_model(threshold=0.52):
     print("Running Bullish Engulfing Model... 🚀\n")
     
     # 1. Get historical data
-    data = get_data()
+    data = get_data(index.TICKERS_IBEX35)
 
     # 2. Filter tickers with bullish engulfing
     data = detect_bullish_engulfing(data)
@@ -210,7 +202,12 @@ def run_model(threshold=0.52):
 
         # Print result
         print(f"Bullish Engulfing in {ticker}:")
-        print(f"Predict: {predictions[0]} \tProb: {probs[0]:.3f}\n")
+        if predictions[0]== True:
+            txt = f"Predict: \033[92m{predictions[0]}\033[0m \tProb: {probs[0]:.3f}\n"
+        else:
+            txt = f"\033[91mPredict: \033[91m{predictions[0]}\n\033[0m \tProb: {probs[0]:.3f}"
+
+        print(txt)
 
 
 # ------------------------------
