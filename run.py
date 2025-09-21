@@ -205,7 +205,7 @@ def run_model(threshold=0.52):
         if predictions[0]== True:
             txt = f"Predict: \033[92m{predictions[0]}\033[0m \tProb: {probs[0]:.3f}\n"
         else:
-            txt = f"\033[91mPredict: \033[91m{predictions[0]}\n\033[0m \tProb: {probs[0]:.3f}"
+            txt = f"Predict: \033[91m{predictions[0]}\033[0m \tProb: {probs[0]:.3f}"
 
         print(txt)
 
