@@ -160,7 +160,7 @@ def run_model(threshold=0.52):
     print("Running Bullish Engulfing Model... 🚀\n")
     
     # 1. Get historical data
-    data = get_data(index.TICKERS_IBEX35)
+    data = get_data(index.TICKERS_NASDAQ100)
 
     # 2. Filter tickers with bullish engulfing
     data = detect_bullish_engulfing(data)
